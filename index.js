@@ -6,7 +6,7 @@ const Datastore = require('nedb');
 const fetch = require('node-fetch');
 
 // this tells this server to load anythin in the .env file
-// as a  environment variable
+// as a  environment variable  - use .gitignore
 require('dotenv').config();
 
 //everything the .env
