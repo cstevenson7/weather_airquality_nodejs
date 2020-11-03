@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/addons/p5.dom.min.js"></script>
+    <!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
+    <title>Document</title>
+  </head>
+    <body> 
+        
+        <h1>Data Selfie App</h1>
+        <p>latitude:<span id="latitude"></span>°<br /></p>
+        <p>latitude:<span id="longitude"></span>°<br /></p>
+        <button id="submit">submit</button>
+
+        <!-- client side JavaScript    -->
+        <script>
+
+            if('geolocation' in navigator){
+                console.log('Yes, we have geolocationing');
+                //The Geolocation.getCurrentPosition() method is used to get the current position of the device.
+                //this is going to happen asynchronously, only when it's ready to grab the lat & lon,
+                // then this function (position) will be called
+                //function(position) is a callback function that takes a 
+                //GeolocationPosition object as its sole input parameter.
+
+                //can us e an arrow here instead , the E6 convention        
+                //navigator.geolocation.getCurrentPosition(function(position) {
+                //get the current position and then when you are ready console.log it
+                //Theremight be be a popup to get the useres approval for knowing their location
+
+                //need to handle the reponse from the server(line49) as json
+                //change this callback inside of getCurrentPosition to a async function
+                // then add await to the fetch function
+
+                //navigator.geolocation.getCurrentPosition(position => {
+                    navigator.geolocation.getCurrentPosition(async position => {
+                    //console.log(position);
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    //now we have data acquired from the navigator.geolocation on the client, there is a server that is hosting the code
+                    //that is being sent to the client to run. next step is to reteive that information from the client and to be 
+                    //sent back to the server and saved in a database.
+                    document.getElementById('latitude').textContent = lat;
+                    document.getElementById('longitude').textContent = lon;
+
+                    //let lat, lon;
+                    const button = document.getElementById('submit');
+                    button.addEventListener('click', async event => {
+                    const data = { lat, lon };
+                    const options = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    };
+                    const response = await fetch('/api', options);
+                    const json = await response.json();
+                    console.log(json);
+                    });
+
+                    // //create an object to send the data to the server that we retrieved from the geolocation function
+                    // const data = {lat,lon};
+                    // //setting up a POST fetch function, sending the lat & lon to the our api on the server
+                    // //we want the body... the body of the post request is wherre I am packaging up all of my data
+                    // //JSON.stringify(data) - take the javaScript object data from above(line38)and turn it into a JSON string
+                    // //since we are sending data in a json formt it is good to specify that in a header
+                    // //this is the basic info : I want this data to be sent as json, I want to tell you that it is going to be json
+                    // //and I want to post it to the API
+                    // //the method  and headers are called properties of options, hover to see
+                    // //adding the button EVENT LISTENER
+                    
+                    // const options = {
+                    //     method:'POST',
+                    //     headers:{
+                    //         'Content-Type':'application/json'
+                    //     },
+                    //     body: JSON.stringify(data)
+                    // }
+                    // //fetch returns a promise, so I can handle the response sent for the server(line 45) here
+                    // //but need to add an await from the async function on line33
+                    // const response = await fetch('/api', options);
+                    // const server_json = await response.json()
+                    //     console.log(server_json);                    
+                });                
+            } else{
+                console.log('No geolocationing');
+            }
+            
+
+        </script>
+
+
+       
+
+
+    </body>
+</html>
