@@ -20,7 +20,10 @@ console.log(process.env)
 //first thing you need to do is get the web server listening
 // port is a numeric address that you want to listen on
 //the () is a callback function
-app.listen(3000, () => console.log('server listening at 3000'));
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Starting server at ${port}`);
+  });
 
 //using express to host the static files
 //anyhing in the public folder is accessible to the public,
